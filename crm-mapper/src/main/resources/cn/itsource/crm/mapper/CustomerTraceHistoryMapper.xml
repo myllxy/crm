@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.CustomerTraceHistoryMapper">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_customertracehistory(title,customer,remark,traceTime,traceType,traceResult,traceUser)
+        VALUES
+        (#{title},#{customer.name},#{remark},#{traceTime},#{traceType.requence},#{traceResult},#{traceUser.sn})
+    </insert>
+    <delete id="delete">
+        DELETE FROM t_customertracehistory WHERE id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        DELETE FROM t_customertracehistory WHERE id IN
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i.id}
+        </foreach>
+    </delete>
+    <update id="update">
+        UPDATE t_customertracehistory set
+        customer=#{customer.name},
+        remark=#{remark},
+        title=#{title},
+        traceResult=#{traceResult},
+        traceTime=#{traceTime},
+        traceType=#{traceType.requence},
+        traceUser=#{traceUser.sn}
+        WHERE id=#{id}
+    </update>
+    <select id="selectPageByQuery" resultMap="customerTraceHistoryResultMap">
+        SELECT cth.id,cth.customer,cth.traceTime,cth.traceResult,cth.remark,cth.title,
+        c.id cid, c.name cname,
+        e.id eid,e.username eusername,e.sn esn,e.realName erealName,
+        sdi.id sid,sdi.name sname,sdi.requence srequence FROM t_customertracehistory cth
+        LEFT JOIN t_customer c ON c.name = cth.customer
+        LEFT JOIN t_employee e ON e.sn= cth.traceUser
+        LEFT JOIN t_systemdictionaryitem sdi ON sdi.requence=cth.traceType
+        <include refid="whereSql"/>
+        LIMIT #{begin},#{pageSize}
+    </select>
+    <resultMap id="customerTraceHistoryResultMap" type="CustomerTraceHistory">
+        <id column="id" property="id"/>
+        <result column="traceTime" property="traceTime"/>
+        <result column="traceResult" property="traceResult"/>
+        <result column="title" property="title"/>
+        <result column="remark" property="remark"/>
+        <association property="customer" javaType="Customer">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name"/>
+        </association>
+        <association property="traceUser" javaType="Employee">
+            <id column="eid" property="id"/>
+            <result column="eusername" property="username"/>
+            <result column="erealName" property="realName"/>
+            <result column="esn" property="sn"/>
+        </association>
+        <association property="traceType" javaType="SystemDictionaryItem">
+            <id column="sid" property="id"/>
+            <result column="sname" property="name"/>
+            <result column="srequence" property="requence"/>
+        </association>
+    </resultMap>
+    <select id="getTotalDataCount" resultType="long">
+        SELECT COUNT(*) FROM t_customertracehistory
+        <include refid="whereSql"/>
+    </select>
+    <sql id="whereSql">
+        <where>
+            <if test="date_range_start!=null and date_range_start!=''
+                      and date_range_start!=null and date_range_start!=''">
+                AND traceTime BETWEEN #{date_range_start} AND #{date_range_end}
+            </if>
+        </where>
+    </sql>
+</mapper>

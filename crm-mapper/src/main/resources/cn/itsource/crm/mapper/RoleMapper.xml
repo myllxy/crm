@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.RoleMapper">
+
+    <resultMap id="roleResultMap" type="Role">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <collection property="permissions" ofType="Permission" column="id" select="cn.itsource.crm.mapper.PermissionMapper.selectByRoleId"/>
+    </resultMap>
+
+    <select id="selectPageByQuery" resultMap="roleResultMap">
+        SELECT * FROM t_role
+        <include refid="whereSql"/>
+        limit #{begin},#{pageSize}
+    </select>
+
+    <select id="getTotalDataCount" resultType="long">
+        SELECT count(*) FROM t_role
+        <include refid="whereSql"/>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT("%",#{name},"%")
+            </if>
+        </where>
+    </sql>
+
+
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_role(name, sn) VALUES (#{name},#{sn})
+    </insert>
+
+    <update id="update">
+        UPDATE t_role SET name=#{name},sn=#{sn} WHERE id=#{id}
+    </update>
+
+
+    <!--维护角色和权限的中间表-->
+    <insert id="saveRoleAndPermission">
+        INSERT INTO t_role_permission(role_id, permission_id)
+        VALUES
+        <foreach collection="permissions" separator="," item="p">
+            (#{roleId},#{p.id})
+        </foreach>
+    </insert>
+
+    <!--删除角色和权限的中间表-->
+    <delete id="deleteRoleAndPermission">
+        DELETE FROM t_role_permission WHERE role_id=#{roleId}
+    </delete>
+
+    <!--删除角色-->
+    <delete id="delete">
+        DELETE FROM t_role WHERE id=#{id}
+    </delete>
+</mapper>

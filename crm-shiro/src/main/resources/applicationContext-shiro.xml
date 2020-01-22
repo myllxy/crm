@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <!--session管理器-->
+    <bean id="sessionManager" class="cn.itsource.crm.shiro.session.CrmSessionManager"/>
+
+    <!--shiro的核心对象-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+       <!-- 使用自定义的sessionManager-->
+        <property name="sessionManager" ref="sessionManager"/>
+        <!--配置realm-->
+        <property name="realm" ref="authRealm"/>
+    </bean>
+
+    <!--Realms-->
+    <bean id="authRealm" class="cn.itsource.crm.shiro.realm.AuthenRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"/>
+                <property name="hashIterations" value="10"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!--shiro的过滤器配置-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--如果没有认证通过，则统一跳转到value对应的路径-->
+        <property name="loginUrl" value="/s/login"/>
+        <!--登录成功之后跳转的界面-->
+        <property name="successUrl" value="/s/index"/>
+        <!--没有权限统一跳转到value对应的路径-->
+        <property name="unauthorizedUrl" value="/s/unauthorized"/>
+
+        <!--自定义过滤器-->
+        <property name="filters">
+            <map>
+                <entry key="myauthc">
+                    <bean class="cn.itsource.crm.shiro.filter.MyAuthenticationFilter"/>
+                </entry>
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /login = anon
+                /** = myauthc
+            </value>
+        </property>
+    </bean>
+
+
+</beans>

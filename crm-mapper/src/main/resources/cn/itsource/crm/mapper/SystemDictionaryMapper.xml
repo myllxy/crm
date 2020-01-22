@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.SystemDictionaryMapper">
+    <!-- 配置一对多 -->
+    <!-- 既然是一对多,那么一中某个属性必然要和多中某个属性相匹配,这样一与多才能产生关系,这个属性就是sn -->
+    <resultMap id="getDic" type="cn.itsource.crm.domain.SystemDictionary">
+        <result property="id" column="id"/>
+        <result property="sn" column="sn"/>
+        <result property="intro" column="intro"/>
+        <result property="state" column="state"/>
+        <collection property="details" javaType="ArrayList"
+                    ofType="cn.itsource.crm.domain.SystemDictionaryItem"
+                    column="sn"
+                    select="cn.itsource.crm.mapper.SystemDictionaryItemMapper.selectSystemDictionaryItemByParentSn">
+            <id property="id" column="id" javaType="long" jdbcType="BIGINT"/>
+            <result property="name" column="name" javaType="string" jdbcType="VARCHAR"/>
+            <result property="requence" column="requence" javaType="long" jdbcType="BIGINT"/>
+            <result property="intro" column="intro" javaType="string" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <!-- 通过sn来查询数据字典,再查出对应所有数据字典明细 -->
+    <select id="selectBySn" resultMap="getDic" parameterType="long">
+        SELECT sd.id,sd.name,sd.sn
+        FROM t_systemdictionary sd WHERE sn=#{sd.sn}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+
+    </insert>
+
+    <delete id="delete">
+
+    </delete>
+    <delete id="batchDelete">
+
+    </delete>
+    <update id="update">
+
+    </update>
+
+    <select id="selectById" resultType="SystemDictionary">
+    </select>
+
+    <select id="selectAll" resultType="SystemDictionary">
+
+    </select>
+
+    <select id="selectPageByQuery" resultType="SystemDictionary">
+
+    </select>
+    <select id="getTotalDataCount" resultType="long">
+
+    </select>
+
+</mapper>

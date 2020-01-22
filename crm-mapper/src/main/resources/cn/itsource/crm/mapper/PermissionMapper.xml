@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.PermissionMapper">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_permission (name, resource) VALUES (#{name },#{resource})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM t_permission WHERE id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        DELETE FROM t_permission WHERE id IN
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i.id}
+        </foreach>
+    </delete>
+    <update id="update">
+        UPDATE t_permission
+        SET name=#{name},resource=#{resource}
+        WHERE id=#{id}
+    </update>
+
+    <select id="selectByRoleId" resultType="Permission">
+        SELECT p.* FROM t_permission p
+        JOIN t_role_permission rp ON p.id = rp.permission_id
+        WHERE rp.role_id=#{roleId}
+    </select>
+
+    <select id="selectAll" resultType="Permission">
+        SELECT * FROM t_permission
+    </select>
+
+    <select id="selectPageByQuery" resultType="Permission">
+        SELECT * FROM t_permission
+        <include refid="whereSql"/>
+        LIMIT #{begin},#{pageSize}
+    </select>
+    <select id="getTotalDataCount" resultType="long">
+        SELECT COUNT(*) FROM t_permission
+        <include refid="whereSql"/>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT("%",#{name},"%")
+            </if>
+        </where>
+    </sql>
+
+</mapper>

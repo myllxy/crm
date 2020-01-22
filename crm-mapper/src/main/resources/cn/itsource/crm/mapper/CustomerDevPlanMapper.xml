@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.CustomerDevPlanMapper">
+    <!--添加-->
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_customerdevplan (planTime,planSubject,planDetails,planType,inputTime,inputUser_id,potentialCustomer_id,developStatus)
+        VALUES (#{planTime},#{planSubject},#{planDetails},#{planType.id},#{inputTime},#{inputUser.id},#{potentialCustomer.id},#{developStatus})
+    </insert>
+    <!--删除-->
+    <delete id="delete">
+        DELETE FROM t_customerdevplan WHERE id=#{id}
+    </delete>
+    <!--批量删除-->
+    <delete id="batchDelete">
+        DELETE FROM t_customerdevplan WHERE id IN
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i.id}
+        </foreach>
+    </delete>
+    <!--修改-->
+    <update id="update">
+        UPDATE t_customerdevplan
+        set
+          planTime=#{planTime},planSubject=#{planSubject},planDetails=#{planDetails},developStatus=#{developStatus},
+          planType=#{planType.id},inputTime=#{inputTime},inputUser_id=#{inputUser.id},potentialCustomer_id=#{potentialCustomer.id}
+        WHERE id=#{id}
+    </update>
+
+    <resultMap id="customerdevplanResultMap" type="CustomerDevPlan">
+        <id property="id" column="id"/>
+        <result property="planTime" column="planTime"/>
+        <result property="planSubject" column="planSubject"/>
+        <result property="planDetails" column="planDetails"/>
+        <result property="planType" column="planType"/>
+        <result property="inputTime" column="inputTime"/>
+        <result property="developStatus" column="developStatus"/>
+        <!--开发计划中的潜在用户-->
+        <association property="potentialCustomer" javaType="PotentialCustomer">
+            <id property="id" column="pcid"/>
+            <result property="name" column="pcname"/>
+            <result property="linkManTel" column="pcLinkManTel"/>
+            <association property="customerSource" javaType="SystemDictionaryItem">
+                <id property="id" column="sdiid"/>
+                <result property="name" column="sdiname"/>
+                <result property="requence" column="sdirequence"/>
+            </association>
+        </association>
+        <!--开发计划中的计划实施方式-->
+        <association property="planType" javaType="SystemDictionaryItem">
+            <id property="id" column="sdiPlanTypeid"/>
+            <result property="name" column="sdiPlanTypename"/>
+            <result property="requence" column="sdiPlanTyperequence"/>
+        </association>
+    </resultMap>
+    <!--根据id查询-->
+    <select id="selectById" resultMap="customerdevplanResultMap" >
+        SELECT cdp.id,cdp.planTime,cdp.planSubject,cdp.planDetails,cdp.inputTime,cdp.developStatus,
+               sdiPlanType.id sdiPlanTypeid,sdiPlanType.name sdiPlanTypename,sdiPlanType.requence sdiPlanTyperequence,
+               pc.id pcid,pc.name pcname,pc.linkManTel pcLinkManTel,
+			   sdi.id sdiid,sdi.name sdiname,sdi.requence sdirequence
+        FROM t_customerdevplan cdp
+        LEFT JOIN t_systemdictionaryitem sdiPlanType
+        ON cdp.planType=sdiPlanType.id
+        LEFT JOIN t_potentialcustomer pc
+        ON cdp.potentialCustomer_id=pc.id
+        LEFT JOIN t_systemdictionaryitem sdi
+        ON pc.customerSource=sdi.id
+        WHERE cdp.id=#{id}
+    </select>
+    <!--查询所有-->
+    <select id="selectAll"  resultMap="customerdevplanResultMap">
+        SELECT cdp.id,cdp.planTime,cdp.planSubject,cdp.planDetails,cdp.inputTime,cdp.developStatus,
+               sdiPlanType.id sdiPlanTypeid,sdiPlanType.name sdiPlanTypename,sdiPlanType.requence sdiPlanTyperequence,
+               pc.id pcid,pc.name pcname,pc.linkManTel pcLinkManTel,
+			   sdi.id sdiid,sdi.name sdiname,sdi.requence sdirequence
+        FROM t_customerdevplan cdp
+        LEFT JOIN t_systemdictionaryitem sdiPlanType
+        ON cdp.planType=sdiPlanType.id
+        LEFT JOIN t_potentialcustomer pc
+        ON cdp.potentialCustomer_id=pc.id
+        LEFT JOIN t_systemdictionaryitem sdi
+        ON pc.customerSource=sdi.id
+    </select>
+    <!--根据条件分页查询-->
+    <select id="selectPageByQuery"  resultMap="customerdevplanResultMap">
+        SELECT cdp.id,cdp.planTime,cdp.planSubject,cdp.planDetails,cdp.inputTime,cdp.developStatus,
+               sdiPlanType.id sdiPlanTypeid,sdiPlanType.name sdiPlanTypename,sdiPlanType.requence sdiPlanTyperequence,
+               pc.id pcid,pc.name pcname,pc.linkManTel pcLinkManTel,
+               sdi.id sdiid,sdi.name sdiname,sdi.requence sdirequence
+        FROM t_customerdevplan cdp
+        LEFT JOIN t_systemdictionaryitem sdiPlanType
+        ON cdp.planType=sdiPlanType.id
+        LEFT JOIN t_potentialcustomer pc
+        ON cdp.potentialCustomer_id=pc.id
+        LEFT JOIN t_systemdictionaryitem sdi
+        ON pc.customerSource=sdi.id
+        <include refid="whereSql"/>
+        LIMIT #{begin},#{pageSize}
+    </select>
+    <!--查询数据总条数-->
+    <select id="getTotalDataCount" resultType="long">
+        SELECT COUNT(*) FROM t_customerdevplan
+        <include refid="whereSql"/>
+    </select>
+    <!--where.条件-->
+    <sql id="whereSql">
+        <where>
+            <if test="planSubject!=null and planSubject!=''">
+                AND planSubject LIKE CONCAT("%",#{planSubject},"%")
+            </if>
+        </where>
+    </sql>
+</mapper>

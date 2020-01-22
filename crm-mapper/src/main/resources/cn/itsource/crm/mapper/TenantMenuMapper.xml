@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.TenantMapper">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO
+        t_tenant (companyName, companyPassword, companyTel, companyNum, sysName, companyEmail, registerTime, state, companyAddress, companylogoUrl)
+        VALUES (#{companyName},#{companyPassword},#{companyTel},#{companyNum},#{sysName},#{companyEmail},#{registerTime},#{state},#{companyAddress},#{companylogoUrl})
+    </insert>
+
+    <delete id="delete">
+
+    </delete>
+    <delete id="batchDelete">
+
+    </delete>
+    <update id="update">
+
+    </update>
+
+    <select id="selectById" resultType="SystemMenu">
+
+    </select>
+
+    <select id="selectAll" resultType="SystemMenu">
+
+    </select>
+
+    <select id="selectPageByQuery" resultType="SystemMenu">
+
+    </select>
+    <select id="getTotalDataCount" resultType="long">
+
+    </select>
+
+</mapper>

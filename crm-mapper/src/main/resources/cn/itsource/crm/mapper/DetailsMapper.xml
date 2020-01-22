@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.DetailsMapper">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_details(name) VALUES (#{name})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM t_details WHERE id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        DELETE FROM t_details WHERE id IN
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i.id}
+        </foreach>
+    </delete>
+    <update id="update">
+        UPDATE t_details set name=#{name} WHERE id=#{id}
+    </update>
+
+    <select id="selectById" resultType="Details">
+        SELECT * FROM t_details WHERE id=#{id}
+    </select>
+
+    <select id="selectAll" resultType="Details">
+        SELECT * FROM t_details
+    </select>
+
+    <select id="selectPageByQuery" resultType="Details">
+        SELECT * FROM t_details
+        <include refid="whereSql"/>
+        LIMIT #{begin},#{pageSize}
+    </select>
+    <select id="getTotalDataCount" resultType="long">
+        SELECT COUNT(*) FROM t_details
+        <include refid="whereSql"/>
+    </select>
+    <sql id="whereSql">
+        <where>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT("%",#{name},"%")
+            </if>
+        </where>
+    </sql>
+</mapper>

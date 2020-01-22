@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.SystemDictionaryItemMapper">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    </insert>
+    <delete id="delete">
+    </delete>
+    <delete id="batchDelete">
+    </delete>
+    <update id="update">
+    </update>
+    <select id="selectByRequence" resultType="SystemDictionaryItem">
+        SELECT * FROM t_systemdictionaryitem WHERE requence=#{requence}
+    </select>
+    <select id="selectAll" resultType="SystemDictionaryItem">
+    </select>
+    <resultMap id="SystemDictionaryItemResultMap" type="cn.itsource.crm.domain.SystemDictionaryItem">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="requence" property="requence"/>
+        <result column="intro" property="intro"/>
+        <association property="parent" column="parent_sn" javaType="SystemDictionary">
+            <id property="id" column="id"/>
+            <result property="sn" column="sn"/>
+            <result property="intro" column="intro"/>
+            <result property="state" column="state"/>
+        </association>
+    </resultMap>
+    <select id="selectSystemDictionaryItemByParentSn" parameterType="long"
+            resultMap="SystemDictionaryItemResultMap">
+        SELECT * FROM t_systemdictionaryitem WHERE parent_sn = #{sn}
+    </select>
+    <!--查询客户来源-->
+    <select id="selectCustomerSources" resultType="SystemDictionaryItem">
+        SELECT * FROM t_systemdictionaryitem WHERE parent_sn=1
+    </select>
+    <!--查询计划实施方式-->
+    <select id="selectPlanType" resultType="SystemDictionaryItem">
+        SELECT * FROM t_systemdictionaryitem WHERE parent_sn=2
+    </select>
+
+    <select id="selectPageByQuery" resultType="SystemDictionaryItem">
+
+    </select>
+    <select id="getTotalDataCount" resultType="long">
+
+    </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itsource.crm.mapper.ContractPayDetailMapper">
+    <!--自定义映射规则-->
+    <resultMap id="contractPayDetailResultMap" type="ContractPayDetail">
+        <id column="id" property="id"/>
+        <result column="payTime" property="payTime"/>
+        <result column="money" property="money"/>
+        <result column="scale" property="scale"/>
+        <result column="isPayment" property="isPayment"/>
+        <!--外表contract-->
+        <association property="contract" javaType="Contract">
+            <id column="oid" property="id"/>
+            <result column="osn" property="sn"/>
+        </association>
+    </resultMap>
+    <!--保存-->
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_contractPayDetail(money,contract_id,payTime,scale,isPayment) VALUES (#{money},#{contract.id},#{payTime},#{scale},#{isPayment})
+    </insert>
+    <!--删除-->
+    <delete id="delete">
+        DELETE FROM t_contractPayDetail WHERE id=#{id}
+    </delete>
+    <!--批量删除-->
+    <delete id="batchDelete">
+        DELETE FROM t_contractPayDetail WHERE id IN
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i.id}
+        </foreach>
+    </delete>
+    <!--修改-->
+    <update id="update">
+        UPDATE t_contractPayDetail set money=#{money},contract_id=#{contract.id},payTime=#{payTime},scale=#{scale},isPayment=#{isPayment} WHERE id=#{id}
+    </update>
+    <!--根据id查询-->
+    <select id="selectById" resultMap="contractPayDetailResultMap">
+        SELECT c.id,c.payTime,c.money,c.scale,c.isPayment,o.id oid ,o.sn osn
+        FROM t_contractpaydetail c
+        JOIN t_contract o ON c.contract_id = o.id WHERE c.id=#{id}
+    </select>
+    <!--查询所有-->
+    <select id="selectAll" resultMap="contractPayDetailResultMap">
+        SELECT c.id,c.payTime,c.money,c.scale,c.isPayment,o.id oid ,o.sn osn
+        FROM t_contractpaydetail c
+        JOIN t_contract o ON c.contract_id = o.id
+    </select>
+    <!--根据分页查询-->
+    <select id="selectPageByQuery" resultMap="contractPayDetailResultMap">
+        SELECT c.id,c.payTime,c.money,c.scale,c.isPayment,o.id oid ,o.sn osn
+        FROM t_contractpaydetail c
+        JOIN t_contract o ON c.contract_id = o.id
+        <include refid="whereSql"/>
+        LIMIT #{begin},#{pageSize}
+    </select>
+    <!--模糊查询总条数-->
+    <select id="getTotalDataCount" resultType="long">
+        SELECT  COUNT(*) FROM t_contractPayDetail c
+        <include refid="whereSql"/>
+    </select>
+    <sql id="whereSql">
+        <where>
+            <if test="beginTime!=null and beginTime!=''">
+                <![CDATA[ AND DATE_FORMAT(payTime,'%Y-%m-%d')>=  DATE_FORMAT(#{beginTime},'%Y-%m-%d')]]>
+            </if>
+            <if test="endTime!=null and endTime!=''">
+               <![CDATA[ AND DATE_FORMAT(payTime,'%Y-%m-%d') <= DATE_FORMAT(#{endTime},'%Y-%m-%d')]]>
+            </if>
+        </where>
+    </sql>
+</mapper>
