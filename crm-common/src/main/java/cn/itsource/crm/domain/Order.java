@@ -5,36 +5,42 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
-
-//{
-//    sn:ccc,
-//        customer:{id:1},
-//        signTime:2019-01-02
-//
-//        }
 public class Order extends BaseDomain {
-    //定金单号
-    private String sn;
-    //定金客户
+    /* 定金单号 */
+    private Long sn;
+    /* 定金客户 */
     private Customer customer;
-    //签订时间（前台传过来）
-    private Date signTime;
-    //营销人员
+    /* 签订时间（前台传过来） */
+    private String signTime;
+    /* 营销人员 */
     private Employee seller;
-    //定金金额
+    /* 定金金额 */
     private BigDecimal sum;
-    //摘要
+    /* 摘要 */
     private String intro;
-    /*//所属租户
-    private Integer tenant_id;*/
+    /* 所属租户 */
+    private String Tenant;
 
-    public String getSn() {
+    public Order() {
+    }
+
+    public Order(Long sn, Customer customer, String signTime, Employee seller, BigDecimal sum, String intro, String tenant) {
+
+        this.sn = sn;
+        this.customer = customer;
+        this.signTime = signTime;
+        this.seller = seller;
+        this.sum = sum;
+        this.intro = intro;
+        Tenant = tenant;
+    }
+
+    public Long getSn() {
         return sn;
     }
 
-    public void setSn(String sn) {
+    public void setSn(Long sn) {
         this.sn = sn;
     }
 
@@ -45,14 +51,12 @@ public class Order extends BaseDomain {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")//前台到后台，时间格式化
-    //交易世界按东八区，加8个小时（后台到前台）
-    public Date getSignTime() {
+
+    public String getSignTime() {
         return signTime;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    public void setSignTime(Date signTime) {
+    public void setSignTime(String signTime) {
         this.signTime = signTime;
     }
 
@@ -80,13 +84,11 @@ public class Order extends BaseDomain {
         this.intro = intro;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "sn=" + sn +
-                ", signTime=" + signTime +
-                ", sum=" + sum +
-                ", intro='" + intro + '\'' +
-                '}';
+    public String getTenant() {
+        return Tenant;
+    }
+
+    public void setTenant(String tenant) {
+        Tenant = tenant;
     }
 }

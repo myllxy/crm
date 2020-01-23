@@ -15,8 +15,8 @@ public class BillServiceTest {
 
     @Test
     public void test() throws Exception {
-        Bill bill = new Bill();
-        bill.setClient("AA");
-        billService.save(bill);
+//        Bill bill = new Bill();
+//        bill.setClient("AA");
+//        billService.save(bill);
     }
 }

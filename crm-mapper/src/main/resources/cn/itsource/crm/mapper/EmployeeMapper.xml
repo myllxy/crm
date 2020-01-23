@@ -62,6 +62,31 @@
         <include refid="whereSql"/>
         LIMIT #{begin},#{pageSize}
     </select>
+    <resultMap id="EmployeeResultMap" type="Employee">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="realName" property="realName"/>
+        <result column="password" property="password"/>
+        <result column="tel" property="tel"/>
+        <result column="email" property="email"/>
+        <result column="inputTime" property="inputTime"/>
+        <result column="state" property="state"/>
+        <result column="sn" property="sn"/>
+        <!--部门映射-->
+        <association property="department" javaType="Department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+        <collection property="roles" ofType="Role" column="id" select="queryRolesByEmployeeSn">
+        </collection>
+    </resultMap>
+    <!-- 通过角色id查询角色的权限信息   这里是从中间表查询信息 -->
+    <select id="queryRolesByEmployeeSn" parameterType="long" resultMap="RoleResultMap">
+        select r.id rid,r.name rname, r.sn rsn
+        from t_employee_role er
+        join t_role r on r.id = er.role_id
+        where er.employee_id = #{id}
+    </select>
     <select id="getTotalDataCount" resultType="long">
         SELECT COUNT(*) FROM t_employee
         <include refid="whereSql"/>
@@ -93,37 +118,11 @@
         FROM t_employee e
         WHERE username=#{username}
     </select>
-    <resultMap id="EmployeeResultMap" type="Employee">
-        <id column="id" property="id"/>
-        <result column="username" property="username"/>
-        <result column="realName" property="realName"/>
-        <result column="password" property="password"/>
-        <result column="tel" property="tel"/>
-        <result column="email" property="email"/>
-        <result column="inputTime" property="inputTime"/>
-        <result column="state" property="state"/>
-        <result column="sn" property="sn"/>
-        <!--部门映射-->
-        <association property="department" javaType="Department">
-            <id column="did" property="id"/>
-            <result column="dname" property="name"/>
-        </association>
-        <collection property="roles" ofType="Role" column="id" select="queryRolesByEmployeeid">
-        </collection>
-    </resultMap>
-
-    <!--通过角色id查询角色的权限信息   这里是从中间表查询信息-->
-    <select id="queryRolesByEmployeeid" parameterType="long" resultMap="RoleResultMap">
-        select r.id rid,r.name rname, r.sn rsn
-        from t_employee_role er
-        join t_role r on r.id = er.role_id
-        where er.employee_id = #{id}
-    </select>
     <!--再嵌套结果-->
     <resultMap id="RoleResultMap" type="Role">
-        <id property="id" column="rid"></id>
-        <result property="name" column="rname"></result>
-        <result property="sn" column="rsn"></result>
+        <id property="id" column="rid"/>
+        <result property="name" column="rname"/>
+        <result property="sn" column="rsn"/>
     </resultMap>
 
     <!--角色权限中间表保存-->

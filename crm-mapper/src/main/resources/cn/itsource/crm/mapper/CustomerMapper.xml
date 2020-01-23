@@ -72,7 +72,7 @@
         </association>
     </resultMap>
     <select id="selectAll" resultMap="customerResultMap">
-        SELECT c.id,c.customerSource,
+        SELECT c.id,c.customerSource,c.name,
         i.requence,i.id iid,i.name iname,i.parent_sn iparent_sn,
         s.id did,s.sn dsn,s.name dname
         FROM t_customer c
