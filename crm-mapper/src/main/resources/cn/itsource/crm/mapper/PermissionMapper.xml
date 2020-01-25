@@ -4,26 +4,31 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.itsource.crm.mapper.PermissionMapper">
     <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO t_permission (name, resource) VALUES (#{name},#{resource})
+        INSERT INTO t_permission (name, resource, sn) VALUES (#{name},#{resource},#{sn})
     </insert>
     <delete id="delete">
-        DELETE FROM t_permission WHERE id=#{id}
+        DELETE FROM t_permission WHERE sn=#{sn}
     </delete>
     <delete id="batchDelete">
-        DELETE FROM t_permission WHERE id IN
+        DELETE FROM t_permission WHERE sn IN
         <foreach collection="list" item="i" open="(" close=")" separator=",">
-            #{i.id}
+            #{i.sn}
         </foreach>
     </delete>
     <update id="update">
         UPDATE t_permission
-        SET name=#{name},resource=#{resource}
+        <set>
+            <if test="name!= null and name != ''">name=#{name},</if>
+            <if test="resource!= null and resource != ''">resource=#{resource},</if>
+            <if test="sn!= null and sn != ''">sn=#{sn},</if>
+        </set>
         WHERE id=#{id}
     </update>
-    <select id="selectByRoleId" resultType="Permission">
-        SELECT p.* FROM t_permission p
-        JOIN t_role_permission rp ON p.id = rp.permission_id
-        WHERE rp.role_id=#{roleId}
+    <select id="selectPermissionByRoleSn" resultType="Permission">
+        SELECT p.*
+        FROM t_permission p
+        JOIN t_role_permission rp ON p.sn = rp.permission_sn
+        WHERE rp.role_sn=#{sn}
     </select>
     <select id="selectAll" resultType="Permission">
         SELECT * FROM t_permission

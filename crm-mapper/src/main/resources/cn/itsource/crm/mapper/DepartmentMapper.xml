@@ -23,13 +23,55 @@
     <select id="selectById" resultType="Department">
         SELECT * FROM t_department WHERE id=#{id}
     </select>
-
+    <select id="selectBySn" resultType="Department">
+        SELECT * FROM t_department WHERE sn=#{sn}
+    </select>
+    <select id="selectByParentSn" resultType="Department">
+        SELECT * FROM t_department WHERE parent_sn=#{sn}
+    </select>
     <select id="selectAll" resultType="Department">
 
     </select>
-
-    <select id="selectPageByQuery" resultType="Department">
-        SELECT * FROM t_department
+    <select id="getDepartment" resultMap="departmentResultMap">
+        SELECT d.*
+        FROM t_department d
+    </select>
+    <resultMap id="departmentResultMap" type="Department">
+        <id column="id" property="id"/>
+        <result column="sn" property="sn"/>
+        <result column="name" property="name"/>
+        <result column="state" property="state"/>
+        <association property="manager" column="manager_sn" javaType="Employee">
+            <id column="eid" property="id"/>
+            <result column="eusername" property="username"/>
+            <result column="esn" property="sn"/>
+        </association>
+        <association property="parent" column="parent_sn" javaType="Department">
+            <id column="d2id" property="id"/>
+            <result column="d2sn" property="sn"/>
+            <result column="d2name" property="name"/>
+            <result column="d2state" property="state"/>
+        </association>
+        <collection property="childrens"
+                    javaType="ArrayList"
+                    ofType="Department"
+                    column="sn"
+                    select="cn.itsource.crm.mapper.DepartmentMapper.selectByParentSn">
+            <id column="d3id" property="id"/>
+            <result column="d3sn" property="sn"/>
+            <result column="d3name" property="name"/>
+            <result column="d3state" property="state"/>
+        </collection>
+    </resultMap>
+    <select id="selectPageByQuery" resultMap="departmentResultMap">
+        SELECT d.id,d.name,d.sn,d.manager_sn,d.parent_sn,d.state,
+        e.id eid,e.username eusername,e.sn esn,
+        d2.id d2id,d2.sn d2sn,d2.name d2name,
+        d3.id d3id,d3.sn d3sn,d3.name d3name
+        FROM t_department d
+        LEFT JOIN t_employee e ON d.manager_sn = e.sn
+        LEFT JOIN t_department d2 ON d2.sn = d.parent_sn
+        LEFT JOIN t_department d3 ON d3.parent_sn = d.sn
         <include refid="whereSql"/>
         LIMIT #{begin},#{pageSize}
     </select>

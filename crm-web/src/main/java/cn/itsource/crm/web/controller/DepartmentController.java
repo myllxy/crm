@@ -111,4 +111,9 @@ public class DepartmentController {
         return departmentService.selectById(id);
     }
 
+    @RequestMapping(value = "/getDepartment", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Department> getDepartment() {
+        return departmentService.getDepartment();
+    }
 }

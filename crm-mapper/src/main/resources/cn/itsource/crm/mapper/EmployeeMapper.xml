@@ -84,8 +84,8 @@
     <select id="queryRolesByEmployeeSn" parameterType="long" resultMap="RoleResultMap">
         select r.id rid,r.name rname, r.sn rsn
         from t_employee_role er
-        join t_role r on r.id = er.role_id
-        where er.employee_id = #{id}
+        join t_role r on r.sn = er.role_sn
+        where er.employee_sn = #{sn}
     </select>
     <select id="getTotalDataCount" resultType="long">
         SELECT COUNT(*) FROM t_employee
@@ -125,16 +125,15 @@
         <result property="sn" column="rsn"/>
     </resultMap>
 
-    <!--角色权限中间表保存-->
-    <insert id="saveEmployeeRole" parameterType="arrayList">
-        insert into employee_role (employee_id,role_id) values
-        /*循环批量处理*/
-        <foreach collection="list" item="item" separator=",">
-            (#{item.employeeId},#{item.roleId})
-        </foreach>
-    </insert>
-    <!--角色权限中间表删除-->
-    <delete id="deleteEmployeeRole" parameterType="long">
-        delete from employee_role where employee_id=#{employeeId}
-    </delete>
+    <!--&lt;!&ndash;角色权限中间表保存&ndash;&gt;-->
+    <!--<insert id="saveEmployeeRole" parameterType="arrayList">-->
+        <!--insert into employee_role (employee_sn,role_sn) VALUES-->
+        <!--<foreach collection="list" item="roles" separator=",">-->
+            <!--(#{item.employeeId},#{item.roleSn})-->
+        <!--</foreach>-->
+    <!--</insert>-->
+    <!--&lt;!&ndash;角色权限中间表删除&ndash;&gt;-->
+    <!--<delete id="deleteEmployeeRole" parameterType="long">-->
+        <!--delete from employee_role where employee_id=#{employeeId}-->
+    <!--</delete>-->
 </mapper>

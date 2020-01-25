@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RoleServiceImpl extends BaseServiceImpl<Role,Long> implements IRoleService {
+public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements IRoleService {
 
     @Autowired
     private RoleMapper roleMapper;
@@ -29,25 +29,25 @@ public class RoleServiceImpl extends BaseServiceImpl<Role,Long> implements IRole
         //保存中间表
         List<Permission> permissions = role.getPermissions();
         //保存中间表
-        roleMapper.saveRoleAndPermission(role.getId(), permissions);
+        roleMapper.saveRoleAndPermission(permissions, role.getSn());
     }
 
     @Override
     public void update(Role role) {
         //先删除中间表
-        roleMapper.deleteRoleAndPermission(role.getId());
+        roleMapper.deleteRoleAndPermission(role.getSn());
         //再修改角色
         super.update(role);
         //保存中间表
-        roleMapper.saveRoleAndPermission(role.getId(), role.getPermissions());
+        roleMapper.saveRoleAndPermission(role.getPermissions(), role.getSn());
     }
 
     @Override
-    public void delete(Long roleId) {
+    public void delete(Long roleSn) {
         //删除中间表
-        roleMapper.deleteRoleAndPermission(roleId);
+        roleMapper.deleteRoleAndPermission(roleSn);
         //删除角色
-        super.delete(roleId);
+        super.delete(roleSn);
     }
 
 }

@@ -10,14 +10,16 @@ import java.util.List;
 public interface RoleMapper extends BaseMapper<Role, Long> {
     /**
      * 保存中间表
-     * @param roleId  角色id
-     * @param permissions  权限
+     *
+     * @param roleSn      角色sn
+     * @param permissions 权限
      */
-    void saveRoleAndPermission(@Param("roleId") Long roleId, @Param("permissions") List<Permission> permissions);
+    void saveRoleAndPermission(@Param("permissions") List<Permission> permissions, @Param("roleSn") Long roleSn);
 
     /**
      * 根据角色删除对应的权限（role_permission中间表）
-     * @param roleId
+     *
+     * @param roleSn
      */
-    void deleteRoleAndPermission(Long roleId);
+    void deleteRoleAndPermission(@Param("roleSn") Long roleSn);
 }

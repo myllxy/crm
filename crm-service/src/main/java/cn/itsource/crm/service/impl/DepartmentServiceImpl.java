@@ -8,8 +8,10 @@ import cn.itsource.crm.service.IDepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class DepartmentServiceImpl extends BaseServiceImpl<Department,Long> implements IDepartmentService {
+public class DepartmentServiceImpl extends BaseServiceImpl<Department, Long> implements IDepartmentService {
 
     @Autowired
     private DepartmentMapper departmentMapper;
@@ -20,5 +22,8 @@ public class DepartmentServiceImpl extends BaseServiceImpl<Department,Long> impl
     }
 
 
-
+    @Override
+    public List<Department> getDepartment() {
+        return departmentMapper.getDepartment();
+    }
 }

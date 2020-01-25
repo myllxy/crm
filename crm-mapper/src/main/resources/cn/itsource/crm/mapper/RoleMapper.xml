@@ -7,8 +7,8 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="sn" property="sn"/>
-        <collection property="permissions" ofType="Permission" column="id"
-                    select="cn.itsource.crm.mapper.PermissionMapper.selectByRoleId"/>
+        <collection property="permissions" ofType="Permission" column="sn"
+                    select="cn.itsource.crm.mapper.PermissionMapper.selectPermissionByRoleSn"/>
     </resultMap>
     <select id="selectPageByQuery" resultMap="roleResultMap">
         SELECT * FROM t_role
@@ -32,20 +32,16 @@
     <update id="update">
         UPDATE t_role SET name=#{name},sn=#{sn} WHERE sn=#{sn}
     </update>
-    <!-- 维护角色和权限的中间表 -->
+    <delete id="delete">
+        DELETE FROM t_role WHERE id=#{id}
+    </delete>
+    <delete id="deleteRoleAndPermission">
+        DELETE FROM t_role_permission WHERE role_sn = #{roleSn}
+    </delete>
     <insert id="saveRoleAndPermission">
-        INSERT INTO t_role_permission(role_id, permission_id)
-        VALUES
-        <foreach collection="permissions" separator="," item="p">
-            (#{roleId},#{p.id})
+        INSERT INTO t_role_permission(permission_sn,role_sn) VALUES
+        <foreach collection="permissions" item="permission" separator=",">
+            (#{permission.sn},#{roleSn})
         </foreach>
     </insert>
-    <!-- 删除角色和权限的中间表 -->
-    <delete id="deleteRoleAndPermission">
-        DELETE FROM t_role_permission WHERE role_id=#{roleId}
-    </delete>
-    <!--删除角色-->
-    <delete id="delete">
-        DELETE FROM t_role WHERE sn=#{sn}
-    </delete>
 </mapper>

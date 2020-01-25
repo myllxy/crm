@@ -39,7 +39,7 @@
     </insert>
     <select id="selectPageByQuery" resultMap="customerResultMap">
         SELECT c.id,c.name,c.gender,c.tel,c.seller,c.status,
-        i.requence,i.id iid,i.name iname,
+        i.requence irequence,i.id iid,i.name iname,
         e.sn ssn,e.id sid,e.username susername
         FROM t_customer c
         LEFT JOIN t_systemdictionaryitem i ON c.customerSource = i.requence
@@ -62,7 +62,7 @@
         <!-- 注意这两者的属性必须一致 -->
         <association property="customerSource" javaType="SystemDictionaryItem">
             <id column="iid" property="id"/>
-            <result column="requence" property="requence"/>
+            <result column="irequence" property="requence"/>
             <result column="iname" property="name"/>
             <association property="parent" javaType="SystemDictionary">
                 <id column="did" property="id"/>

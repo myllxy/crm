@@ -7,27 +7,25 @@ import java.util.List;
 
 public class Department extends BaseDomain {
     //部门编号
-    private String sn;
+    private Long sn;
     //部门名称
     private String name;
     //路径
     private String dirPath;
     //状态
     private Integer state;
-
     //部门经理 ? 关系
     private Employee manager;
-
     // 自连接 上级部门?
     private Department parent;
     //子部门?
-    private List<Department> children = new ArrayList<>();
+    private List<Department> childrens = new ArrayList<>();
 
-    public String getSn() {
+    public Long getSn() {
         return sn;
     }
 
-    public void setSn(String sn) {
+    public void setSn(Long sn) {
         this.sn = sn;
     }
 
@@ -55,12 +53,12 @@ public class Department extends BaseDomain {
         this.parent = parent;
     }
 
-    public List<Department> getChildren() {
-        return children;
+    public List<Department> getChildrens() {
+        return childrens;
     }
 
-    public void setChildren(List<Department> children) {
-        this.children = children;
+    public void setChildrens(List<Department> childrens) {
+        this.childrens = childrens;
     }
 
     public String getDirPath() {
@@ -79,16 +77,5 @@ public class Department extends BaseDomain {
         this.state = state;
     }
 
-    @Override
-    public String toString() {
-        return "Department{" +
-                "sn='" + sn + '\'' +
-                ", name='" + name + '\'' +
-                ", manager='" + manager + '\'' +
-                ", parent='" + parent + '\'' +
-                ", children='" + children + '\'' +
-                ", dirPath='" + dirPath + '\'' +
-                ", state=" + state +
-                '}';
-    }
+
 }

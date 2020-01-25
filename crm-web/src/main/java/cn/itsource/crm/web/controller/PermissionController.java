@@ -56,11 +56,11 @@ public class PermissionController {
         return permissionService.selectPageByQuery(permissionQuery);
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE, name = "删除权限")
+    @RequestMapping(value = "/delete/{sn}", method = RequestMethod.DELETE, name = "删除权限")
     @ResponseBody
-    public AjaxResult delete(@PathVariable("id") Long id) {
+    public AjaxResult delete(@PathVariable("sn") Long sn) {
         try {
-            permissionService.delete(id);
+            permissionService.delete(sn);
             return new AjaxResult();
         } catch (Exception e) {
             e.printStackTrace();
