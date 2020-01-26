@@ -8,8 +8,9 @@
         SELECT * FROM t_employee WHERE username=#{username}
     </select>
     <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO t_employee(username, realName, password, tel, email, inputTime, state, dept_id)
-        VALUES (#{username},#{realName},#{password},#{tel},#{email},#{inputTime},#{state},#{department.id})
+        INSERT INTO t_employee(username, realName, tel, email, state, dept_sn, sn)
+        VALUES
+        (#{username},#{realName},#{tel},#{email},#{state},#{department.sn},#{sn})
     </insert>
     <delete id="delete">
         DELETE FROM t_employee WHERE id=#{id}
@@ -38,6 +39,12 @@
             <if test="state!=null">
                 state=#{state},
             </if>
+            <if test="department!=null">
+                dept_sn=#{department.sn},
+            </if>
+            <if test="sn!=null">
+                sn=#{sn},
+            </if>
         </set>
         WHERE id=#{id}
     </update>
@@ -55,10 +62,10 @@
         ON e.dept_id = d.id
     </select>
     <select id="selectPageByQuery" resultMap="EmployeeResultMap">
-        SELECT e.id,e.username,e.realName,e.tel,e.email,e.inputTime,e.state,
-        d.id did, d.name dname
+        SELECT e.id,e.username,e.realName,e.tel,e.email,e.inputTime,e.state,e.sn,
+        d.id did,d.name dname,d.sn dsn
         FROM t_employee e
-        LEFT JOIN t_department d ON e.dept_id = d.id
+        LEFT JOIN t_department d ON e.dept_sn = d.sn
         <include refid="whereSql"/>
         LIMIT #{begin},#{pageSize}
     </select>
@@ -76,8 +83,9 @@
         <association property="department" javaType="Department">
             <id column="did" property="id"/>
             <result column="dname" property="name"/>
+            <result column="dsn" property="sn"/>
         </association>
-        <collection property="roles" ofType="Role" column="id" select="queryRolesByEmployeeSn">
+        <collection property="roles" ofType="Role" column="sn" select="queryRolesByEmployeeSn">
         </collection>
     </resultMap>
     <!-- 通过角色id查询角色的权限信息   这里是从中间表查询信息 -->
@@ -124,16 +132,13 @@
         <result property="name" column="rname"/>
         <result property="sn" column="rsn"/>
     </resultMap>
-
-    <!--&lt;!&ndash;角色权限中间表保存&ndash;&gt;-->
-    <!--<insert id="saveEmployeeRole" parameterType="arrayList">-->
-        <!--insert into employee_role (employee_sn,role_sn) VALUES-->
-        <!--<foreach collection="list" item="roles" separator=",">-->
-            <!--(#{item.employeeId},#{item.roleSn})-->
-        <!--</foreach>-->
-    <!--</insert>-->
-    <!--&lt;!&ndash;角色权限中间表删除&ndash;&gt;-->
-    <!--<delete id="deleteEmployeeRole" parameterType="long">-->
-        <!--delete from employee_role where employee_id=#{employeeId}-->
-    <!--</delete>-->
+    <delete id="deleteRoleAndEmployee">
+        DELETE FROM t_employee_role WHERE employee_sn = #{empSn}
+    </delete>
+    <insert id="saveRoleAndEmployee">
+        INSERT INTO t_employee_role (role_sn,employee_sn) VALUES
+        <foreach collection="roles" item="role" separator=",">
+            (#{role.sn},#{empSn})
+        </foreach>
+    </insert>
 </mapper>

@@ -20,32 +20,20 @@ public class EmployeeController {
     private IEmployeeService employeeService;
 
 
-    /**
-     * resetful: 它是一个架构风格，它是基于Http协议的扩展
-     * 它给你提供了多种请求方式来定位资源
-     * GET      一般是用来做查询的，查询单个对象
-     * POST     一般用来做修改的
-     * DELETE   一般用来做删除
-     * PUT      一般用来做新增
-     * PATCH    一般用来操作批量数据的
-     *
-     * @return
-     */
-    @RequestMapping(value = "/list", method = RequestMethod.PATCH, name = "孙老师好帅啊")
+    @RequestMapping(value = "/list", method = RequestMethod.PATCH)
     @ResponseBody
     public List<Employee> list() {
         return employeeService.selectAll();
     }
 
-    @RequestMapping(value = "/selectPageByQuery", method = RequestMethod.PATCH, name = "孙老师好帅啊")
+    @RequestMapping(value = "/selectPageByQuery", method = RequestMethod.PATCH)
     @ResponseBody
     /* 这里注意RequestBody和RequestParm的区别 */
     public PageResult<Employee> selectPageByQuery(@RequestBody EmployeeQuery employeeQuery) {
-        PageResult<Employee> employeePageResult = employeeService.selectPageByQuery(employeeQuery);
-        return employeePageResult;
+        return employeeService.selectPageByQuery(employeeQuery);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.PUT, name = "孙老师好帅啊")
+    @RequestMapping(value = "/save", method = RequestMethod.PUT)
     @ResponseBody
     public AjaxResult save(@RequestBody Employee employee) {
         try {
@@ -57,7 +45,7 @@ public class EmployeeController {
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST, name = "孙老师好帅啊")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult update(@RequestBody Employee employee) {
         try {
@@ -69,14 +57,13 @@ public class EmployeeController {
         }
     }
 
-
     /**
      * 删除
      *
      * @param id
      * @return
      */
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE, name = "孙老师好帅啊")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public AjaxResult delete(@PathVariable("id") Long id) {
         try {
@@ -88,7 +75,7 @@ public class EmployeeController {
         }
     }
 
-    @RequestMapping(value = "/batchDelete", method = RequestMethod.PATCH, name = "孙老师好帅啊")
+    @RequestMapping(value = "/batchDelete", method = RequestMethod.PATCH)
     @ResponseBody
     public AjaxResult batchDelete(@RequestBody List<Employee> employees) {
         try {
@@ -106,7 +93,7 @@ public class EmployeeController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, name = "孙老师好帅啊")
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Employee get(@PathVariable("id") Long id) {
         return employeeService.selectById(id);
@@ -124,7 +111,7 @@ public class EmployeeController {
      * @param sn
      * @return
      */
-    @RequestMapping(value = "/getEmployeeBySn/{sn}", method = RequestMethod.GET, name = "孙老师好帅啊")
+    @RequestMapping(value = "/getEmployeeBySn/{sn}", method = RequestMethod.GET)
     @ResponseBody
     public Employee getEmployeeBySn(@PathVariable("sn") Long sn) {
         return employeeService.getEmployeeBySn(sn);
@@ -136,7 +123,7 @@ public class EmployeeController {
      * @param name
      * @return
      */
-    @RequestMapping(value = "/getEmployeeByName/{name}", method = RequestMethod.GET, name = "孙老师好帅啊")
+    @RequestMapping(value = "/getEmployeeByName/{name}", method = RequestMethod.GET)
     @ResponseBody
     public Employee getEmployeeByName(@PathVariable("name") String name) {
         return employeeService.getEmployeeByName(name);

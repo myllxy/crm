@@ -66,4 +66,10 @@ public class RoleController {
             return new AjaxResult(false, "删除失败！" + e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/getRoles", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Role> getRoles() {
+        return roleService.getRoles();
+    }
 }

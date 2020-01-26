@@ -22,4 +22,11 @@ public interface RoleMapper extends BaseMapper<Role, Long> {
      * @param roleSn
      */
     void deleteRoleAndPermission(@Param("roleSn") Long roleSn);
+
+    /**
+     * 拿到所有角色
+     *
+     * @return
+     */
+    List<Role> getRoles();
 }

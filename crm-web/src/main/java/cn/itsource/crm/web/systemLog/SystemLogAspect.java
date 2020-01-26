@@ -71,8 +71,7 @@ public class SystemLogAspect {
             //获取当前切入点方法的所需参数
             Object[] args = pjp.getArgs();
             //执行方法并返回
-            Object obj = pjp.proceed(args);
-            return obj;
+            return pjp.proceed(args);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

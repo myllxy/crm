@@ -50,4 +50,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements IRol
         super.delete(roleSn);
     }
 
+    @Override
+    public List<Role> getRoles() {
+        return roleMapper.getRoles();
+    }
 }

@@ -44,4 +44,8 @@
             (#{permission.sn},#{roleSn})
         </foreach>
     </insert>
+    <select id="getRoles" resultMap="roleResultMap">
+        SELECT r.*
+        FROM t_role r
+    </select>
 </mapper>
