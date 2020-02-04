@@ -9,6 +9,7 @@ import cn.itsource.crm.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,6 +35,17 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements IRol
 
     @Override
     public void update(Role role) {
+        System.out.println("ssss");
+        /* 平铺权限 */
+        List<Permission> parentPermissions = role.getPermissions();
+        ArrayList<Permission> resultPermissions = new ArrayList<>();
+        for (Permission parentPermission : parentPermissions) {
+            resultPermissions.add(parentPermission);
+            for (Permission childPermission : parentPermission.getChildren()) {
+                resultPermissions.add(childPermission);
+            }
+        }
+        role.setPermissions(resultPermissions);
         //先删除中间表
         roleMapper.deleteRoleAndPermission(role.getSn());
         //再修改角色

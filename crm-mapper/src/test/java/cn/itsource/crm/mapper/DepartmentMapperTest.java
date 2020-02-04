@@ -12,8 +12,6 @@ public class DepartmentMapperTest extends BaseTest {
 
     @Test
     public void test() throws Exception{
-        for (Department department : departmentMapper.selectAll()) {
-            System.out.println(department);
-        }
+        System.out.println(departmentMapper.selectPageByQuery(null));
     }
 }

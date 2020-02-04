@@ -2,33 +2,25 @@ package cn.itsource.crm.domain;
 
 import cn.itsource.base.domain.BaseDomain;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class SystemMenu extends BaseDomain {
-    //菜单编号
-    private String sn;
-    //菜单名称
+    private Long sn;
     private String name;
-    //图标
     private String icon;
-    //地址
     private String url;
-    //简介
     private String intro;
-
-    //上级菜单 自连接
-    // parent
-    //private List<SystemMenu> parent = new ArrayList<>();
     private SystemMenu parent;
 
 
-    public String getSn() {
+    public Long getSn() {
         return sn;
     }
 
-    public void setSn(String sn) {
+    public void setSn(Long sn) {
         this.sn = sn;
+    }
+
+    public SystemMenu() {
     }
 
     public String getName() {
@@ -69,5 +61,16 @@ public class SystemMenu extends BaseDomain {
 
     public void setParent(SystemMenu parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public String toString() {
+        return "SystemMenu{" +
+                "sn=" + sn +
+                ", name='" + name + '\'' +
+                ", icon='" + icon + '\'' +
+                ", url='" + url + '\'' +
+                ", intro='" + intro + '\'' +
+                '}';
     }
 }

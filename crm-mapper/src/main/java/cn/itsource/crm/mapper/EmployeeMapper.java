@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface EmployeeMapper extends BaseMapper<Employee, Long> {
-    //根据员工查用户名
     Employee selectByUsername(String username);
 
     List<Employee> getEmployee();
@@ -20,6 +19,8 @@ public interface EmployeeMapper extends BaseMapper<Employee, Long> {
     void saveRoleAndEmployee(@Param("roles") List<Role> roles, @Param("empSn") Long empSn);
 
     void deleteRoleAndEmployee(@Param("empSn") Long empSn);
+
+    List<Role> queryRolesByEmployeeSn(@Param("sn") Long empSn);
 }
 
 

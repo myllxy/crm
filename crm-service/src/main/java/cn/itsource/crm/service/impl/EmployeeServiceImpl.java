@@ -4,6 +4,7 @@ import cn.itsource.base.mapper.BaseMapper;
 import cn.itsource.base.service.impl.BaseServiceImpl;
 import cn.itsource.crm.domain.Department;
 import cn.itsource.crm.domain.Employee;
+import cn.itsource.crm.domain.Role;
 import cn.itsource.crm.mapper.DepartmentMapper;
 import cn.itsource.crm.mapper.EmployeeMapper;
 import cn.itsource.crm.service.IDepartmentService;
@@ -11,6 +12,7 @@ import cn.itsource.crm.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,4 +61,8 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee, Long> impleme
         return employeeMapper.getEmployeeByName(name);
     }
 
+    @Override
+    public List<Role> queryRolesByEmployeeSn(Long empSn) {
+        return employeeMapper.queryRolesByEmployeeSn(empSn);
+    }
 }

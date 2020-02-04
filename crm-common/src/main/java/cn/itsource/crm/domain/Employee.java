@@ -31,6 +31,15 @@ public class Employee extends BaseDomain {
     //租户 多对一
     private Long sn;
     private Tenant tenant;
+    private List<SystemMenu> menus = new ArrayList<>();
+
+    public List<SystemMenu> getSystemMenus() {
+        return menus;
+    }
+
+    public void setSystemMenus(List<SystemMenu> menus) {
+        this.menus = menus;
+    }
 
     public String getUsername() {
         return username;
@@ -130,5 +139,24 @@ public class Employee extends BaseDomain {
     }
 
     public Employee() {
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "username='" + username + '\'' +
+                ", realName='" + realName + '\'' +
+                ", password='" + password + '\'' +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", inputTime='" + inputTime + '\'' +
+                ", state=" + state +
+                ", type=" + type +
+                ", roles=" + roles +
+                ", department=" + department +
+                ", sn=" + sn +
+                ", tenant=" + tenant +
+                ", menus=" + menus +
+                '}';
     }
 }

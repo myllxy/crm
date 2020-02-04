@@ -24,16 +24,43 @@
         </set>
         WHERE id=#{id}
     </update>
-    <select id="selectPermissionByRoleSn" resultType="Permission">
+    <select id="selectPermissionByRoleSn" resultMap="permissionResultMap">
         SELECT p.*
         FROM t_permission p
         JOIN t_role_permission rp ON p.sn = rp.permission_sn
         WHERE rp.role_sn=#{sn}
     </select>
-    <select id="selectAll" resultType="Permission">
-        SELECT * FROM t_permission
+    <select id="selectAll" resultMap="permissionResultMap">
+        SELECT per.id,per.sn,per.resource,per.name,per.parent_sn
+        FROM t_permission per
+        WHERE per.parent_sn = 0
     </select>
-    <select id="selectPageByQuery" resultType="Permission">
+    <resultMap id="permissionResultMap" type="Permission">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sn" column="sn"/>
+        <result property="resource" column="resource"/>
+        <association property="parent"
+                     javaType="Permission"
+                     column="parent_sn"
+                     select="cn.itsource.crm.mapper.PermissionMapper.selectBySn"/>
+        <collection property="children"
+                    javaType="ArrayList"
+                    ofType="Permission"
+                    column="sn"
+                    select="cn.itsource.crm.mapper.PermissionMapper.selectByParentSn">
+        </collection>
+    </resultMap>
+    <select id="selectBySn" resultType="Permission">
+        SELECT * FROM t_permission WHERE sn=#{sn}
+    </select>
+    <select id="selectBySonSn" resultType="Permission">
+        SELECT * FROM t_permission WHERE sn=#{sn}
+    </select>
+    <select id="selectByParentSn" resultMap="permissionResultMap">
+        SELECT * FROM t_permission WHERE parent_sn=#{sn}
+    </select>
+    <select id="selectPageByQuery" resultMap="permissionResultMap">
         SELECT * FROM t_permission
         <include refid="whereSql"/>
         LIMIT #{begin},#{pageSize}

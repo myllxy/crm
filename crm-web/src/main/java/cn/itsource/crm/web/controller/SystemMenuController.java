@@ -40,7 +40,7 @@ public class SystemMenuController {
     @RequestMapping(value = "/selectPageByQuery", method = RequestMethod.PATCH)
     @ResponseBody
     /* 这里注意RequestBody和RequestParm的区别 */
-    public PageResult<SystemMenu> electPageByQuery(@RequestBody SystemMenuQuery systemMenuQuery) {
+    public PageResult<SystemMenu> selectPageByQuery(@RequestBody SystemMenuQuery systemMenuQuery) {
         return systemMenuService.selectPageByQuery(systemMenuQuery);
     }
 
@@ -99,16 +99,14 @@ public class SystemMenuController {
         }
     }
 
+
     /**
-     * 查询单个对象
-     *
-     * @param id
      * @return
      */
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getMenus", method = RequestMethod.GET)
     @ResponseBody
-    public SystemMenu get(@PathVariable("id") Long id) {
-        return systemMenuService.selectById(id);
+    public List<SystemMenu> getMenus() {
+        return systemMenuService.getMenus();
     }
 
 }

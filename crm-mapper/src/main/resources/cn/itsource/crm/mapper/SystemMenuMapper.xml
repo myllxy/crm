@@ -4,17 +4,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.itsource.crm.mapper.SystemMenuMapper">
     <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-
+        INSERT INTO t_systemmenu (sn,name,parent_sn,icon,url,intro)
+        VALUES (#{sn},#{name},#{parent.sn},#{icon},#{url},#{intro})
     </insert>
-
     <delete id="delete">
-
+        DELETE FROM t_systemmenu WHERE id=#{id}
     </delete>
     <delete id="batchDelete">
-
+        DELETE FROM t_systemmenu WHERE id IN
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i.id}
+        </foreach>
     </delete>
     <update id="update">
-
+        UPDATE t_systemmenu
+        <set>
+            <if test="sn!=null and sn!=''">
+                sn=#{sn},
+            </if>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="parent!=null and parent!=''">
+                parent_sn=#{parent.sn},
+            </if>
+            <if test="icon!=null and icon!=''">
+                icon=#{icon},
+            </if>
+            <if test="url!=null and url!=''">
+                url=#{url},
+            </if>
+            <if test="intro!=null and intro!=''">
+                intro=#{intro},
+            </if>
+        </set>
+        WHERE id=#{id}
     </update>
 
     <select id="selectById" resultType="SystemMenu">
@@ -25,11 +49,48 @@
 
     </select>
 
-    <select id="selectPageByQuery" resultType="SystemMenu">
-
+    <select id="selectPageByQuery" resultMap="systemMenusResultMap">
+        SELECT s.*,
+        s2.id s2id,s2.sn s2sn,s2.name s2name,s2.icon s2icon,s2.url s2url,s2.intro s2intro
+        FROM t_systemmenu s
+        LEFT JOIN t_systemmenu s2 ON s2.sn = s.parent_sn
+        <include refid="whereSql"/>
+        LIMIT #{begin},#{pageSize}
     </select>
+    <resultMap id="systemMenusResultMap" type="SystemMenu">
+        <id column="id" property="id"/>
+        <result column="sn" property="sn"/>
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="url" property="url"/>
+        <result column="intro" property="intro"/>
+        <association property="parent" javaType="SystemMenu">
+            <id column="s2id" property="id"/>
+            <result column="s2sn" property="sn"/>
+            <result column="s2name" property="name"/>
+            <result column="s2icon" property="icon"/>
+            <result column="s2url" property="url"/>
+            <result column="s2intro" property="intro"/>
+        </association>
+    </resultMap>
+    <sql id="whereSql">
+        <where>
+            <if test="name!=null and name!=''">
+                AND name LIKE CONCAT("%",#{name},"%")
+            </if>
+        </where>
+    </sql>
     <select id="getTotalDataCount" resultType="long">
-
+        SELECT COUNT(*) FROM t_systemmenu
+        <include refid="whereSql"/>
     </select>
-
+    <select id="getMenus" resultMap="systemMenusResultMap">
+        SELECT s.id,s.sn,s.name,s.icon,s.url,s.intro
+        FROM t_systemmenu s
+    </select>
+    <select id="getMenusByPermission" resultMap="systemMenusResultMap">
+        SELECT s.*
+        FROM t_systemmenu s
+        WHERE s.sn = #{permission.sn}
+    </select>
 </mapper>

@@ -39,4 +39,13 @@ public class Role extends BaseDomain {
 
     public Role() {
     }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "sn=" + sn +
+                ", name='" + name + '\'' +
+                ", permissions=" + permissions +
+                '}';
+    }
 }

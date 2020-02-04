@@ -39,7 +39,7 @@
     </insert>
     <select id="selectPageByQuery" resultMap="customerResultMap">
         SELECT c.id,c.name,c.gender,c.tel,c.seller,c.status,
-        i.requence irequence,i.id iid,i.name iname,
+        i.requence irequence,i.id iid,i.name iname,i.parent_sn iparent_sn,
         e.sn ssn,e.id sid,e.username susername
         FROM t_customer c
         LEFT JOIN t_systemdictionaryitem i ON c.customerSource = i.requence
@@ -64,16 +64,15 @@
             <id column="iid" property="id"/>
             <result column="irequence" property="requence"/>
             <result column="iname" property="name"/>
-            <association property="parent" javaType="SystemDictionary">
-                <id column="did" property="id"/>
-                <result column="dsn" property="sn"/>
-                <result column="dname" property="name"/>
+            <association property="parent" javaType="SystemDictionary"
+                         column="iparent_sn"
+                         select="cn.itsource.crm.mapper.SystemDictionaryMapper.selectByParentSn">
             </association>
         </association>
     </resultMap>
     <select id="selectAll" resultMap="customerResultMap">
         SELECT c.id,c.customerSource,c.name,
-        i.requence,i.id iid,i.name iname,i.parent_sn iparent_sn,
+        i.requence,i.id iid,i.name iname,
         s.id did,s.sn dsn,s.name dname
         FROM t_customer c
         LEFT JOIN t_systemdictionaryitem i ON c.customerSource = i.requence

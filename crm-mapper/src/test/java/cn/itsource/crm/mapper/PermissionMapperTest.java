@@ -1,20 +1,20 @@
 package cn.itsource.crm.mapper;
 
 import cn.itsource.crm.BaseTest;
-import cn.itsource.crm.domain.Customer;
+import cn.itsource.crm.domain.Permission;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class CustomerMapperTest extends BaseTest {
+
+public class PermissionMapperTest extends BaseTest {
 
     @Autowired
-    private CustomerMapper customerMapper;
+    private PermissionMapper permissionMapper;
 
     @Test
     public void test() throws Exception {
-        List<Customer> customers = customerMapper.selectAll();
-        customers.forEach(System.out::println);
+        System.out.println(permissionMapper.selectAll());
     }
 }

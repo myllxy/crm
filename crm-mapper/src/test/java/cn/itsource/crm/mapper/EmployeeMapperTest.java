@@ -18,5 +18,6 @@ public class EmployeeMapperTest extends BaseTest {
         for (String s : selectName) {
             System.out.println(s);
         }
+        System.out.println(employeeMapper.getClass());
     }
 }

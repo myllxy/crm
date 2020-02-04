@@ -7,7 +7,6 @@
         INSERT INTO t_department (sn,name,manager_sn,parent_sn,state)
         VALUES (#{sn},#{name},#{manager.sn},#{parent.sn},#{state})
     </insert>
-
     <delete id="delete">
         DELETE FROM t_department WHERE id=#{id}
     </delete>
@@ -28,14 +27,13 @@
         </set>
         WHERE id=#{id}
     </update>
-
     <select id="selectById" resultType="Department">
         SELECT * FROM t_department WHERE id=#{id}
     </select>
     <select id="selectBySn" resultType="Department">
         SELECT * FROM t_department WHERE sn=#{sn}
     </select>
-    <select id="selectByParentSn" resultType="Department">
+    <select id="selectByParentSn" resultMap="departmentResultMap">
         SELECT * FROM t_department WHERE parent_sn=#{sn}
     </select>
     <select id="selectAll" resultType="Department">
@@ -66,21 +64,15 @@
                     ofType="Department"
                     column="sn"
                     select="cn.itsource.crm.mapper.DepartmentMapper.selectByParentSn">
-            <id column="d3id" property="id"/>
-            <result column="d3sn" property="sn"/>
-            <result column="d3name" property="name"/>
-            <result column="d3state" property="state"/>
         </collection>
     </resultMap>
     <select id="selectPageByQuery" resultMap="departmentResultMap">
         SELECT d.id,d.name,d.sn,d.manager_sn,d.parent_sn,d.state,
         e.id eid,e.username eusername,e.sn esn,
-        d2.id d2id,d2.sn d2sn,d2.name d2name,
-        d3.id d3id,d3.sn d3sn,d3.name d3name
+        d2.id d2id,d2.sn d2sn,d2.name d2name,d2.state d2state
         FROM t_department d
         LEFT JOIN t_employee e ON d.manager_sn = e.sn
         LEFT JOIN t_department d2 ON d2.sn = d.parent_sn
-        LEFT JOIN t_department d3 ON d3.parent_sn = d.sn
         <include refid="whereSql"/>
         LIMIT #{begin},#{pageSize}
     </select>

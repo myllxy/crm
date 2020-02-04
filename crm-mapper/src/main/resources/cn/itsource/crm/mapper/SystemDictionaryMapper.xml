@@ -25,7 +25,10 @@
         SELECT sd.id,sd.name,sd.sn
         FROM t_systemdictionary sd WHERE sn=#{sd.sn}
     </select>
-
+    <select id="selectByParentSn" resultMap="getDic" parameterType="long">
+        SELECT sd.*
+        FROM t_systemdictionary sd WHERE sn=#{sn}
+    </select>
     <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
 
     </insert>
